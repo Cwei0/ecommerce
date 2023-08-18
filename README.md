@@ -1,5 +1,5 @@
 # E-commerce store
-An ecommerce app that is built using only django. This projects covers the basis of developing with up until deploying on Amazon aws.
+An ecommerce app that is built using only django. This projects covers the basis of developing with python django up until deploying on Amazon aws.
 
 ## Installation
 For the packages and libraries that will be used just the requirements file above.
