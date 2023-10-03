@@ -48,11 +48,11 @@
           <a type="button" role="button" href="{% url "store_basket:basket_summary" %}"
             class="btn btn-outline-secondary">
             {% with total_qty=basket|length %}
-              <div class="d-inline-flex" id="basket-qty">
+              <div id="basket-qty" class="d-inline-flex">
                 {% if total_qty > 0 %}
-                  {{total_qty}}
+                    {{ total_qty }}
                 {% else %}
-                  0
+                    0
                 {% endif %}
               </div>
             {% endwith %}
