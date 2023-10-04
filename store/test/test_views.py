@@ -1,3 +1,5 @@
+from importlib import import_module
+from django.conf import settings
 from unittest import skip
 from django.urls import reverse
 from django.http import HttpRequest
@@ -43,6 +45,15 @@ class TestViewResponse(TestCase):
             image="django",
         )
 
+    def create_session_request(self):
+        """
+        Create a request object with a session.
+        """
+        request = HttpRequest()
+        engine = import_module(settings.SESSION_ENGINE)
+        request.session = engine.SessionStore()
+        return request
+
     def test_url_allowed_host(self):
         """
         Test if an HTTP request with an allowed host returns a 200 status code.
@@ -70,10 +81,8 @@ class TestViewResponse(TestCase):
         """
         Test if the homepage HTML contains the expected title and returns a 200 status code.
         """
-        request = HttpRequest()
-        response = product_all(
-            request
-        )  # Assuming product_all is the view being tested
+        request = self.create_session_request()
+        response = product_all(request)  # Assuming product_all is the view being tested
         html = response.content.decode("utf8")
         self.assertIn("<title> BookStore </title>", html)
         self.assertEqual(response.status_code, 200)
@@ -84,9 +93,8 @@ class TestViewResponse(TestCase):
         and returns a 200 status code.
         """
         request = self.factory.get("/django-beginners")
-        response = product_all(
-            request
-        )  # Assuming product_all is the view being tested
+        request = self.create_session_request()
+        response = product_all(request)  # Assuming product_all is the view being tested
         html = response.content.decode("utf8")
         self.assertIn("<title> BookStore </title>", html)
         self.assertEqual(response.status_code, 200)
