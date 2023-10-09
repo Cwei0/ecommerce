@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models.query import QuerySet
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.conf import settings
 
 
 # Create your models here.
@@ -37,7 +38,7 @@ class Product(models.Model):
     objects = models.Manager()
     products = ProductManager()
     created_by = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="product_creator"
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="product_creator"
     )
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, related_name="product_category"
