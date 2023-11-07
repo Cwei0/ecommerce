@@ -8,7 +8,7 @@ class TestBasketView(TestCase):
     def setUp(self):
         category = Category.objects.create(name="django", slug="django")
         user = User.objects.create(username="admin")
-        Product.objects.create(
+        self.product1 = Product.objects.create(
             title="django beginners",
             category=category,
             created_by=user,
@@ -16,7 +16,7 @@ class TestBasketView(TestCase):
             price="20.00",
             image="django",
         )
-        Product.objects.create(
+        self.product2 = Product.objects.create(
             title="django intermediate",
             category=category,
             created_by=user,
@@ -24,7 +24,7 @@ class TestBasketView(TestCase):
             price="20.00",
             image="django",
         )
-        Product.objects.create(
+        self.product3 = Product.objects.create(
             title="django advanced",
             category=category,
             created_by=user,
@@ -34,12 +34,12 @@ class TestBasketView(TestCase):
         )
         self.client.post(
             reverse("store_basket:basket_add"),
-            {"productid": 1, "productqty": 1, "action": "post"},
+            {"productid": self.product1.pk, "productqty": 1, "action": "post"},
             xhr=True,
         )
         self.client.post(
             reverse("store_basket:basket_add"),
-            {"productid": 2, "productqty": 2, "action": "post"},
+            {"productid": self.product2.pk, "productqty": 2, "action": "post"},
             xhr=True,
         )
 
@@ -50,44 +50,41 @@ class TestBasketView(TestCase):
         response = self.client.get(reverse("store_basket:basket_summary"))
         self.assertEqual(response.status_code, 200)
 
-    @skip("Unknown Error")
     def test_basket_add(self):
         """
         Test adding items to the basket
         """
         response = self.client.post(
             reverse("store_basket:basket_add"),
-            {"productid": 3, "productqty": 1, "action": "post"},
+            {"productid": self.product3.pk, "productqty": 1, "action": "post"},
             xhr=True,
         )
         self.assertEqual(response.json(), {"qty": 4})
         response = self.client.post(
             reverse("store_basket:basket_add"),
-            {"productid": 2, "productqty": 1, "action": "post"},
+            {"productid": self.product2.pk, "productqty": 1, "action": "post"},
             xhr=True,
         )
         self.assertEqual(response.json(), {"qty": 3})
 
-    @skip("Unknown Error")
     def test_basket_delete(self):
         """
         Test deleting items from the basket
         """
         response = self.client.post(
             reverse("store_basket:basket_delete"),
-            {"productid": 2, "action": "post"},
+            {"productid": self.product2.pk, "action": "post"},
             xhr=True,
         )
         self.assertEqual(response.json(), {"qty": 1, "subtotal": "20.00"})
 
-    @skip("Unknown Error")
     def test_basket_update(self):
         """
         Test updating items from the basket
         """
         response = self.client.post(
             reverse("store_basket:basket_update"),
-            {"productid": 2, "productqty": 1, "action": "post"},
+            {"productid": self.product2.pk, "productqty": 1, "action": "post"},
             xhr=True,
         )
         self.assertEqual(response.json(), {"qty": 2, "subtotal": "40.00"})
